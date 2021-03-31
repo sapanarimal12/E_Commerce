@@ -19,23 +19,14 @@ class HomeView(BaseView):
 
         return render(request, 'index.html', self.views)
 
+class ItemDetailView(BaseView):
+    def get(self, request, slug):
+        self.views['item_detail'] = Item.objects.filter(slug=slug)
 
-def myaccount(request):
-    return render(request, 'my-account.html')
-def productdetail(request):
-    return render(request, 'product-detail.html')
-def cart(request):
-    return render(request, 'cart.html')
-def login(request):
-    return render(request, 'login.html')
-def contact(request):
-    return  render(request,'contact.html')
-def productlist(request):
-    return render(request, 'product-list.html')
-def wishlist(request):
-    return render(request, 'wishlist.html')
-def checkout(request):
-    return render(request, 'checkout.html')
+        cat = Item.objects.get(slug = slug).category_id
+        self.views['catitems'] = Item.objects.filter(category=cat)
+        return render(request,'product-detail.html',self.views)
+
 
 
 

@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+
 
 # Create your models here.
 
@@ -52,11 +54,15 @@ class Item(models.Model):
     label = models.CharField(choices=LABEL, max_length=200)
     image = models.ImageField(upload_to='media')
     status = models.CharField(choices=STATUS, max_length=200)
+    status = models.CharField(choices=STATUS, max_length=200)
     slug = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
+
+    def get_item_url(self):
+        return reverse("home:products", kwargs={'slug': self.slug})
 
 
 
