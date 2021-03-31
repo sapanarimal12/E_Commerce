@@ -12,10 +12,10 @@ class HomeView(BaseView):
         self.views['sliders'] = Slider.objects.filter(status='active')
         self.views['brands'] = Brand.objects.filter(status='active')
         self.views['ads'] = Ad.objects.all
-        self.views['hot items'] = Item.objects.filter(label='hot')
-        self.views['new items'] = Item.objects.filter(label='new')
-        self.views['sale items'] = Item.objects.filter(label='sale')
-        self.views['default items'] = Item.objects.filter(label='')
+        self.views['hots'] = Item.objects.filter(label='hot')
+        self.views['news'] = Item.objects.filter(label='new')
+        self.views['sales'] = Item.objects.filter(label='sale')
+        self.views['defaults'] = Item.objects.filter(label='')
 
         return render(request, 'index.html', self.views)
 
