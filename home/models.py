@@ -57,6 +57,8 @@ class Item(models.Model):
     status = models.CharField(choices=STATUS, max_length=200)
     slug = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE,null=True)
+
 
     def __str__(self):
         return self.title

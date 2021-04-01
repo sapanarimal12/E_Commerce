@@ -22,8 +22,24 @@ class HomeView(BaseView):
 class ItemDetailView(BaseView):
     def get(self, request, slug):
         self.views['item_detail'] = Item.objects.filter(slug=slug)
+        self.views['brand'] = Brand.objects.filter(status='active')
+        self.views['count'] = []
 
-        cat = Item.objects.get(slug = slug).category_id
+        for i in self.views['brand']:
+            count_food = Item.objects.filter(brand=i.id).count()
+            print(i.name, count_food)
+            d = {'name': i.name, 'count': count_food}
+            self.views['count'].append(d)
+            print(d)
+
+        self.views['book'] = Category.objects.filter(status='active')
+        self.views['cat_count'] = []
+        for i in self.views['book']:
+            count_book = Item.objects.filter(category=i.id).count()
+            dd = {'name': i.name, 'image': i.image, 'cat_count': count_book}
+            self.views['cat_count'].append(dd)
+
+        cat = Item.objects.get(slug=slug).category_id
         self.views['catitems'] = Item.objects.filter(category=cat)
         return render(request,'product-detail.html',self.views)
 
