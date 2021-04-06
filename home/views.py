@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from .models import *
 
@@ -41,7 +43,64 @@ class ItemDetailView(BaseView):
 
         cat = Item.objects.get(slug=slug).category_id
         self.views['catitems'] = Item.objects.filter(category=cat)
-        return render(request,'product-detail.html',self.views)
+        return render(request, 'product-detail.html', self.views)
+
+class CategoryView(BaseView):
+    def get(self, request, slug):
+        cat_id = Category.objects.get(slug=slug).id
+        self.views['catdetail'] = Item.objects.filter(category= cat_id)
+        return render(request, 'product-list.html', self.views)
+
+class SearchView(BaseView):
+    def get(self, request):
+        #query = request.GET.get('search', None)
+        if request.method == 'GET':
+            query = request.GET['search']
+            self.views['search_product'] = Item.objects.filter(title__icontains=query)
+            return render(request, 'search.html', self.views)
+
+        return render(request, 'search.html')
+
+def signup(request):
+    if request.method == 'POSt':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        cpassword = request.POST['cpassword']
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        if password == cpassword:
+            if User.obljects.filter(username = username).exists():
+                messages.error(request, 'This user name is already taken.')
+                return redirect('home:account')
+
+            elif User.objects.filter(email=email).exists():
+                messages.error(request, 'This email is already taken.')
+                return redirect('home:account')
+
+            else:
+                user = User.objects.create_user(
+                    username = username,
+                    email = email,
+                    password = password,
+                    first_name = fname,
+                    last_name = lname
+                )
+                user.save()
+                messages.success(request, 'You are registered.')
+                return redirect('/')
+
+        else:
+            messages.error(request, 'These password do not match.')
+            return redirect('home:account')
+
+    return render(request, 'signup.html')
+
+
+
+
+
+
 
 
 
